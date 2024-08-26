@@ -1,11 +1,11 @@
 from airflow import DAG
-from airflow.operators.python_operator import PythonOperator
+from airflow.operators.python import PythonOperator
 from utils import default_args
 from preprocess_data import OtomotoPreprocessor
 import sys
 import os
 
-sys.path.append(os.path.dirname(__file__))
+# sys.path.append(os.path.dirname(__file__))
 
 dag = DAG(
     'otomoto_pipeline',

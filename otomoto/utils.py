@@ -1,8 +1,6 @@
 import requests
 import os
 from pandas import DataFrame
-import time
-import sqlalchemy
 from pandas import DataFrame
 from datetime import datetime, timedelta
 
