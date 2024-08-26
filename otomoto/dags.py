@@ -9,7 +9,7 @@ import os
 sys.path.append(os.path.dirname(__file__))
 
 dag = DAG(
-    'preprocess_data',
+    'otomoto_pipeline',
     default_args=default_args,
     description='Remove',
     schedule="0 19 * * *",
