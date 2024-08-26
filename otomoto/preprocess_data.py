@@ -1,12 +1,12 @@
 from typing import Any
 import pandas as pd
-from utils import generate_conn_string, clean_df, convert_to
+from otomoto.utils import generate_conn_string, clean_df, convert_to
 from sklearn.model_selection import train_test_split
 
 
-# d = {'serwisowany_w_aso':'Nie',
-#      'bezwypadkowy':'Nie',
-#      'stan':'Używany'}
+d = {'serwisowany_w_aso':'Nie',
+     'bezwypadkowy':'Nie',
+     'stan':'Używany'}
 
 class OtomotoPreprocessor():
     def __init__(self) -> None:
