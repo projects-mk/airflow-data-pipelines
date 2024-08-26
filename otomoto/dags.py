@@ -1,6 +1,6 @@
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
-from utils import default_args
+from ..utils import default_args
 from otomoto.preprocess_data import OtomotoPreprocessor
 from datetime import datetime, timedelta
 import sys
