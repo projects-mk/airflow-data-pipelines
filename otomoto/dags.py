@@ -1,7 +1,7 @@
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
-from otomoto.utils import default_args
-from otomoto.preprocess_data import OtomotoPreprocessor
+from utils import default_args
+from preprocess_data import OtomotoPreprocessor
 import sys
 import os
 

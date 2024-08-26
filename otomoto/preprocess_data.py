@@ -1,6 +1,6 @@
 from typing import Any
 import pandas as pd
-from otomoto.utils import generate_conn_string, clean_df, convert_to
+from utils import generate_conn_string, clean_df, convert_to
 from sklearn.model_selection import train_test_split
 
 
