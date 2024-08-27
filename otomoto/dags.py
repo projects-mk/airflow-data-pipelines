@@ -1,7 +1,7 @@
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
-from otomoto.preprocess_data import OtomotoPreprocessor
+from .preprocess_data import OtomotoPreprocessor
 import sys
 import os
 
