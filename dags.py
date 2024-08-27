@@ -1,7 +1,8 @@
 import sys
+import os
 sys.path.append(os.path.dirname(__file__))
 
-import os
+
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta

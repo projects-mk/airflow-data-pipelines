@@ -1,7 +1,6 @@
 import requests
 import os
 from pandas import DataFrame
-from pandas import DataFrame
 from datetime import datetime, timedelta
 
 def generate_conn_string(db: str) -> str:
