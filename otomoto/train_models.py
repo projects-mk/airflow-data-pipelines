@@ -10,7 +10,7 @@ from warnings import filterwarnings
 import os
 from pandas import DataFrame
 import pandas as pd
-from utils import generate_conn_string
+from otomoto.utils import generate_conn_string
 
 filterwarnings("ignore")
 
