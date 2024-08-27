@@ -37,13 +37,13 @@ class OtomotoPreprocessor():
 
     def _save_to_db(self,X_train: pd.DataFrame, X_test: pd.DataFrame, y_train:pd.DataFrame, y_test:pd.DataFrame):
         
-        self.df.to_sql('preprocessed',con=self.conn_str, schema='otomoto')
+        self.df.to_sql('preprocessed',con=self.conn_str, schema='otomoto', if_exists='replace')
 
-        X_test.to_sql('x_test',con=self.conn_str, schema='otomoto')
-        y_test.to_sql('y_test',con=self.conn_str, schema='otomoto')
+        X_test.to_sql('x_test',con=self.conn_str, schema='otomoto', if_exists='replace')
+        y_test.to_sql('y_test',con=self.conn_str, schema='otomoto', if_exists='replace')
 
-        X_train.to_sql('x_train',con=self.conn_str, schema='otomoto')
-        y_train.to_sql('y_train',con=self.conn_str, schema='otomoto')
+        X_train.to_sql('x_train',con=self.conn_str, schema='otomoto', if_exists='replace')
+        y_train.to_sql('y_train',con=self.conn_str, schema='otomoto', if_exists='replace')
 
     def __call__(self) -> Any:
         self._remove_nulls()
