@@ -1,11 +1,17 @@
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-from utils import default_args
+from datetime import datetime, timedelta
 from preprocess_data import OtomotoPreprocessor
 import sys
 import os
 
 # sys.path.append(os.path.dirname(__file__))
+default_args = {
+    'depends_on_past': False,
+    'start_date': datetime(2023, 10, 4),
+    'retries': 1,
+    'retry_delay': timedelta(minutes=5),
+}
 
 dag = DAG(
     'otomoto_pipeline',

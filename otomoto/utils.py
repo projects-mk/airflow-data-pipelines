@@ -57,9 +57,3 @@ def convert_to(s: str, dtype: int|float):
 
     return dtype(s)
 
-default_args = {
-    'depends_on_past': False,
-    'start_date': datetime(2023, 10, 4),
-    'retries': 1,
-    'retry_delay': timedelta(minutes=5),
-}
