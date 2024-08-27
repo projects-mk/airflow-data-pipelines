@@ -10,7 +10,7 @@ from warnings import filterwarnings
 import os
 from pandas import DataFrame
 import pandas as pd
-
+from utils import generate_conn_string
 
 filterwarnings("ignore")
 
@@ -30,13 +30,14 @@ class ModelTrainer:
         ]
         self.parameters = {"n_estimators": [200, 500, 700], "max_depth": [6]}
         self.encoder = OneHotEncoder(handle_unknown="ignore")
-    
-    def load_data(self):
-        self.x_train = pd.read_sql_table("x_train", con=self.conn_str, shema="otomoto")
-        self.x_test = pd.read_sql_table("x_test", con=self.conn_str, shema="otomoto")
-        self.y_train = pd.read_sql_table("y_train", con=self.conn_str, shema="otomoto")
-        self.y_test = pd.read_sql_table("y_test", con=self.conn_str, shema="otomoto")
 
+    def load_data(self):
+        conn_str = generate_conn_string("projects")
+
+        self.x_train = pd.read_sql_table("x_train", con=conn_str, schema="otomoto")
+        self.x_test = pd.read_sql_table("x_test", con=conn_str, schema="otomoto")
+        self.y_train = pd.read_sql_table("y_train", con=conn_str, schema="otomoto")
+        self.y_test = pd.read_sql_table("y_test", con=conn_str, schema="otomoto")
 
     def one_hot_encoder(self):
         mlflow.set_tracking_uri(self.mlflow_uri)
