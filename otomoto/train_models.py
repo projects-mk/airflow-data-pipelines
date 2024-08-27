@@ -10,7 +10,7 @@ from warnings import filterwarnings
 import os
 from pandas import DataFrame
 import pandas as pd
-from otomoto.utils import generate_conn_string
+from otomoto.utils import generate_conn_string, get_mlflow_uri
 
 filterwarnings("ignore")
 
@@ -24,7 +24,7 @@ class ModelTrainer:
 
         self.project_name = project_name
 
-        self.mlflow_uri = os.getenv("MLFLOW_URI")
+        self.mlflow_uri = get_mlflow_uri()
         self.models = [
             ("xgboost", XGBRegressor()),
         ]

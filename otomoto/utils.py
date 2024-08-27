@@ -16,6 +16,16 @@ def generate_conn_string(db: str) -> str:
     return resp["data"]["data"]["postgres"] + "test_db"
 
 
+def get_mlflow_uri() -> str:
+
+    url = os.environ["VAULT_URL"]
+    token = os.environ["VAULT_TOKEN"]
+
+    resp = requests.get(url, headers={"X-Vault-Token": token}).json()
+
+    return resp["data"]["data"]["mlflow_uri"]
+
+
 def clean_df(df: DataFrame, y_col: str, fillna_dict: dict) -> DataFrame:
     df = df.drop_duplicates()
     df = df.dropna(how="all")
