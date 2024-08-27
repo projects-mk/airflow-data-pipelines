@@ -9,23 +9,18 @@ import datetime
 from warnings import filterwarnings
 import os
 from pandas import DataFrame
+import pandas as pd
+
 
 filterwarnings("ignore")
 
 
 class ModelTrainer:
-    def __init__(
-        self,
-        project_name: str,
-        x_train: DataFrame,
-        y_train: DataFrame,
-        x_test: DataFrame,
-        y_test: DataFrame,
-    ):
-        self.x_train = x_train
-        self.x_test = x_test
-        self.y_train = y_train
-        self.y_test = y_test
+    def __init__(self, project_name: str):
+        self.x_train = DataFrame()
+        self.x_test = DataFrame()
+        self.y_train = DataFrame()
+        self.y_test = DataFrame()
 
         self.project_name = project_name
 
@@ -35,6 +30,13 @@ class ModelTrainer:
         ]
         self.parameters = {"n_estimators": [200, 500, 700], "max_depth": [6]}
         self.encoder = OneHotEncoder(handle_unknown="ignore")
+    
+    def load_data(self):
+        self.x_train = pd.read_sql_table("x_train", con=self.conn_str, shema="otomoto")
+        self.x_test = pd.read_sql_table("x_test", con=self.conn_str, shema="otomoto")
+        self.y_train = pd.read_sql_table("y_train", con=self.conn_str, shema="otomoto")
+        self.y_test = pd.read_sql_table("y_test", con=self.conn_str, shema="otomoto")
+
 
     def one_hot_encoder(self):
         mlflow.set_tracking_uri(self.mlflow_uri)
@@ -103,5 +105,6 @@ class ModelTrainer:
                 mlflow.register_model(model_uri, f"{model_name}")
 
     def __call__(self):
+        self.load_data()
         self.one_hot_encoder()
         self.train_models()
