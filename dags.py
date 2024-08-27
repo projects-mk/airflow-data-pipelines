@@ -32,7 +32,7 @@ otomoto_pipeline_preprocess = PythonOperator(
 
 otomoto_pipeline_train = PythonOperator(
     task_id="2",
-    python_callable=ModelTrainer(project_name="otomoto"),
+    python_callable=ModelTrainer(project_name="otomoto_car_price_predictor"),
     dag=otomoto_pipeline,
 )
 
