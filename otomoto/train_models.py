@@ -1,6 +1,5 @@
 from sklearn.model_selection import GridSearchCV, KFold
 from xgboost import XGBRegressor
-from lightgbm import LGBMRegressor
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 from sklearn.preprocessing import OneHotEncoder
 import numpy as np
@@ -32,8 +31,7 @@ class ModelTrainer:
 
         self.mlflow_uri = os.getenv("MLFLOW_URI")
         self.models = [
-            ("XGBRegressor", XGBRegressor()),
-            ("LGBMRegressor", LGBMRegressor()),
+            ("xgboost", XGBRegressor()),
         ]
         self.parameters = {"n_estimators": [200, 500, 700], "max_depth": [6]}
         self.encoder = OneHotEncoder(handle_unknown="ignore")
