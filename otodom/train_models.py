@@ -34,16 +34,24 @@ class OtodomDomyModelTrainer:
         conn_str = generate_conn_string("projects")
 
         self.x_train = pd.read_sql_table(
-            "x_train", con=conn_str, schema=self.project_name
+            "x_train",
+            con=conn_str,
+            schema=self.project_name.replace("_price_predictor", ""),
         ).drop(columns=["index"], errors="ignore")
         self.x_test = pd.read_sql_table(
-            "x_test", con=conn_str, schema=self.project_name
+            "x_test",
+            con=conn_str,
+            schema=self.project_name.replace("_price_predictor", ""),
         ).drop(columns=["index"], errors="ignore")
         self.y_train = pd.read_sql_table(
-            "y_train", con=conn_str, schema=self.project_name
+            "y_train",
+            con=conn_str,
+            schema=self.project_name.replace("_price_predictor", ""),
         ).drop(columns=["index"], errors="ignore")
         self.y_test = pd.read_sql_table(
-            "y_test", con=conn_str, schema=self.project_name
+            "y_test",
+            con=conn_str,
+            schema=self.project_name.replace("_price_predictor", ""),
         ).drop(columns=["index"], errors="ignore")
 
     def one_hot_encoder(self):
