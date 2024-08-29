@@ -59,9 +59,6 @@ def clean_df(
     return df
 
 
-import numpy as np
-
-
 def group_other_attributes(df: pd.DataFrame, attributes: dict) -> pd.DataFrame:
     for column_name, core_attributes in attributes.items():
         fill = core_attributes[1] if len(core_attributes) > 1 else "inne"
@@ -97,6 +94,7 @@ def convert_to(s: str, dtype: int | float):
         s = s.lower().replace("l/100", "")
         s = s.lower().replace("zł", "")
         s = s.lower().replace("cm3", "")
+        s = s.replace("m²", "")
         s = s.replace(" ", "")
         s = s.replace(",", ".")
         s = s.strip()
@@ -106,8 +104,58 @@ def convert_to(s: str, dtype: int | float):
 
     try:
         return dtype(s)
+
     except ValueError:
         if dtype == int:
             return 0
         elif dtype == float:
             return 0
+
+
+def fix_pokoje(s: str):
+    if isinstance(s, str):
+        if "pok" in s:
+            s = s.split("pok")[0]
+        if "pokój" in s:
+            s = s.split("pokój")[0]
+        s = s.replace(" ", "")
+        s = s.replace(",", ".")
+        s = s.replace("+", "")
+        s = s.strip()
+
+    try:
+        return int(s)
+    except ValueError:
+        return 0
+
+
+def fix_pietra(s: str):
+    if isinstance(s, str):
+        s = s.lower()
+        s = s.split("/")[0]
+        s = s.replace("parter", "0")
+
+    try:
+        return int(s)
+    except (TypeError, ValueError):
+        return 0
+
+
+def fix_miasto(s: str):
+    cities = ["Kraków", "Warszawa", "Gdańsk", "Wrocław"]
+    if isinstance(s, str):
+        for city in cities:
+            if city.lower() in s.lower():
+                return city
+    return None
+
+
+def fix_dzielnica(s: str):
+    try:
+        return s.split(",")[2]
+
+    except IndexError:
+        return s.split(",")[1]
+
+    except AttributeError:
+        return None

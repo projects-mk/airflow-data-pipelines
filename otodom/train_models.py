@@ -14,7 +14,7 @@ from otomoto.utils import generate_conn_string, get_mlflow_uri
 filterwarnings("ignore")
 
 
-class OtodomDomyModelTrainer:
+class OtodomModelTrainer:
     def __init__(self, project_name: str):
         self.x_train = DataFrame()
         self.x_test = DataFrame()
