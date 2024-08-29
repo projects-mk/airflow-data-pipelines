@@ -14,7 +14,7 @@ from otomoto.utils import generate_conn_string, get_mlflow_uri
 filterwarnings("ignore")
 
 
-class OtomotoModelTrainer:
+class OtodomDomyModelTrainer:
     def __init__(self, project_name: str):
         self.x_train = DataFrame()
         self.x_test = DataFrame()
@@ -34,17 +34,17 @@ class OtomotoModelTrainer:
         conn_str = generate_conn_string("projects")
 
         self.x_train = pd.read_sql_table(
-            "x_train", con=conn_str, schema="otomoto"
+            "x_train", con=conn_str, schema=self.project_name
         ).drop(columns=["index"], errors="ignore")
-        self.x_test = pd.read_sql_table("x_test", con=conn_str, schema="otomoto").drop(
-            columns=["index"], errors="ignore"
-        )
+        self.x_test = pd.read_sql_table(
+            "x_test", con=conn_str, schema=self.project_name
+        ).drop(columns=["index"], errors="ignore")
         self.y_train = pd.read_sql_table(
-            "y_train", con=conn_str, schema="otomoto"
+            "y_train", con=conn_str, schema=self.project_name
         ).drop(columns=["index"], errors="ignore")
-        self.y_test = pd.read_sql_table("y_test", con=conn_str, schema="otomoto").drop(
-            columns=["index"], errors="ignore"
-        )
+        self.y_test = pd.read_sql_table(
+            "y_test", con=conn_str, schema=self.project_name
+        ).drop(columns=["index"], errors="ignore")
 
     def one_hot_encoder(self):
         mlflow.set_tracking_uri(self.mlflow_uri)
