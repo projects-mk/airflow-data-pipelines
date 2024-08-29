@@ -45,7 +45,7 @@ otodom_domy_pipeline = DAG(
     "otodom_domy_pipeline",
     default_args=default_args,
     description="Remove",
-    schedule="0 19 * * *",
+    schedule="15 19 * * *",
     catchup=False,
 )
 
@@ -68,7 +68,7 @@ otodom_mieszkania_pipeline = DAG(
     "otodom_mieszkania_pipeline",
     default_args=default_args,
     description="Remove",
-    schedule="0 19 * * *",
+    schedule="30 19 * * *",
     catchup=False,
 )
 
