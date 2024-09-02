@@ -44,7 +44,7 @@ def clean_df(df: DataFrame, y_col: str, fillna_dict: dict) -> DataFrame:
             idxs_to_drop.append(i)
 
     df = df.drop(idxs_to_drop)
-    
+
     # Calculate the thresholds for the lowest 2.5% and highest 2.5%
     lower_threshold = df[y_col].quantile(0.025)
     upper_threshold = df[y_col].quantile(0.975)
