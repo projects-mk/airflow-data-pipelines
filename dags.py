@@ -39,50 +39,50 @@ otomoto_pipeline_train = PythonOperator(
 )
 
 
-# otodom_domy_pipeline = DAG(
-#     "otodom_domy_pipeline",
-#     default_args=default_args,
-#     description="Pipeline for Otodom Domy models",
-#     schedule="15 19 * * *",
-#     catchup=False,
-# )
-
-# otodom_domy_pipeline_preprocess = PythonOperator(
-#     task_id="1_o_d",
-#     python_callable=OtodomDomyPreprocessor(),
-#     dag=otodom_domy_pipeline,
-# )
-
-# otodom_domy_pipeline_train = PythonOperator(
-#     task_id="2_o_d",
-#     python_callable=OtodomModelTrainer(project_name="otodom_domy_price_predictor"),
-#     dag=otodom_domy_pipeline,
-# )
-
-
-otodom_mieszkania_pipeline = DAG(
-    "otodom_mieszkania_pipeline",
+otodom_domy_pipeline = DAG(
+    "otodom_domy_pipeline",
     default_args=default_args,
-    description="Pipeline for Otodom Mieszkania models",
-    schedule="30 19 * * *",
+    description="Pipeline for Otodom Domy models",
+    schedule="15 19 * * *",
     catchup=False,
 )
 
-otodom_mieszkania_pipeline_preprocess = PythonOperator(
-    task_id="1_o_m",
-    python_callable=OtodomMieszkaniaPreprocessor(),
-    dag=otodom_mieszkania_pipeline,
+otodom_domy_pipeline_preprocess = PythonOperator(
+    task_id="1_o_d",
+    python_callable=OtodomDomyPreprocessor(),
+    dag=otodom_domy_pipeline,
 )
 
-otodom_mieszkania_pipeline_train = PythonOperator(
-    task_id="2_o_m",
-    python_callable=OtodomModelTrainer(
-        project_name="otodom_mieszkania_price_predictor"
-    ),
-    dag=otodom_mieszkania_pipeline,
+otodom_domy_pipeline_train = PythonOperator(
+    task_id="2_o_d",
+    python_callable=OtodomModelTrainer(project_name="otodom_domy_price_predictor"),
+    dag=otodom_domy_pipeline,
 )
+
+
+# otodom_mieszkania_pipeline = DAG(
+#     "otodom_mieszkania_pipeline",
+#     default_args=default_args,
+#     description="Pipeline for Otodom Mieszkania models",
+#     schedule="30 19 * * *",
+#     catchup=False,
+# )
+
+# otodom_mieszkania_pipeline_preprocess = PythonOperator(
+#     task_id="1_o_m",
+#     python_callable=OtodomMieszkaniaPreprocessor(),
+#     dag=otodom_mieszkania_pipeline,
+# )
+
+# otodom_mieszkania_pipeline_train = PythonOperator(
+#     task_id="2_o_m",
+#     python_callable=OtodomModelTrainer(
+#         project_name="otodom_mieszkania_price_predictor"
+#     ),
+#     dag=otodom_mieszkania_pipeline,
+# )
 
 
 otomoto_pipeline_preprocess >> otomoto_pipeline_train
-# otodom_domy_pipeline_preprocess >> otodom_domy_pipeline_train
-otodom_mieszkania_pipeline_preprocess >> otodom_mieszkania_pipeline_train
+otodom_domy_pipeline_preprocess >> otodom_domy_pipeline_train
+# otodom_mieszkania_pipeline_preprocess >> otodom_mieszkania_pipeline_train
