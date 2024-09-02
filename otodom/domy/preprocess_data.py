@@ -11,9 +11,6 @@ from otodom.utils import (
     fix_pietra,
     fix_rok_budowy,
     group_other_attributes,
-    fix_miasto,
-    fix_dzielnica,
-    fix_pokoje,
 )
 
 replace_dict = {"zabudowa": ["dom wolnostojący", "wolnostojący"]}

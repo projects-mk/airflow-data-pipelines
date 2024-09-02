@@ -9,7 +9,6 @@ from otodom.utils import (
     clean_df,
     convert_to,
     fix_pietra,
-    fix_rok_budowy,
     group_other_attributes,
     fix_miasto,
     fix_dzielnica,
