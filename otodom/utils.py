@@ -25,9 +25,7 @@ def get_mlflow_uri() -> str:
     return resp["data"]["data"]["mlflow_uri"]
 
 
-def clean_df(
-    df: pd.DataFrame, y_col: str, fillna_dict: dict = {}, replace_dict: dict = {}
-) -> pd.DataFrame:
+def clean_df(df: pd.DataFrame, y_col: str, fillna_dict: dict = {}, replace_dict: dict = {}) -> pd.DataFrame:
     df = df.drop_duplicates()
     df = df.dropna(how="all")
     df = df.drop(
@@ -50,13 +48,6 @@ def clean_df(
 
     df = df.drop(idxs_to_drop)
 
-    # Calculate the thresholds for the lowest 2.5% and highest 2.5%
-    lower_threshold = df[y_col].quantile(0.025)
-    upper_threshold = df[y_col].quantile(0.975)
-
-    # Drop rows where y_col is in the lowest 2.5% or highest 2.5%
-    df = df[(df[y_col] > lower_threshold) & (df[y_col] < upper_threshold)]
-
     for key, val in fillna_dict.items():
         df[key] = df[key].fillna(val)
 
@@ -69,9 +60,7 @@ def clean_df(
 def group_other_attributes(df: pd.DataFrame, attributes: dict) -> pd.DataFrame:
     for column_name, core_attributes in attributes.items():
         fill = core_attributes[1] if len(core_attributes) > 1 else "inne"
-        df[column_name] = df[column_name].apply(
-            lambda x: x if x in core_attributes[0] else fill
-        )
+        df[column_name] = df[column_name].apply(lambda x: x if x in core_attributes[0] else fill)
 
     return df
 

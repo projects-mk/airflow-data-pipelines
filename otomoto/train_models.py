@@ -33,15 +33,15 @@ class OtomotoModelTrainer:
     def load_data(self):
         conn_str = generate_conn_string("projects")
 
-        self.x_train = pd.read_sql_table(
-            "x_train", con=conn_str, schema="otomoto"
-        ).drop(columns=["index"], errors="ignore")
+        self.x_train = pd.read_sql_table("x_train", con=conn_str, schema="otomoto").drop(
+            columns=["index"], errors="ignore"
+        )
         self.x_test = pd.read_sql_table("x_test", con=conn_str, schema="otomoto").drop(
             columns=["index"], errors="ignore"
         )
-        self.y_train = pd.read_sql_table(
-            "y_train", con=conn_str, schema="otomoto"
-        ).drop(columns=["index"], errors="ignore")
+        self.y_train = pd.read_sql_table("y_train", con=conn_str, schema="otomoto").drop(
+            columns=["index"], errors="ignore"
+        )
         self.y_test = pd.read_sql_table("y_test", con=conn_str, schema="otomoto").drop(
             columns=["index"], errors="ignore"
         )
@@ -51,16 +51,10 @@ class OtomotoModelTrainer:
         mlflow.set_experiment(self.project_name)
 
         encoder = OneHotEncoder(handle_unknown="ignore")
-        encoder.fit(
-            self.x_train[self.x_train.select_dtypes(include=["object"]).columns]
-        )
+        encoder.fit(self.x_train[self.x_train.select_dtypes(include=["object"]).columns])
 
-        self.x_train = encoder.transform(
-            self.x_train[self.x_train.select_dtypes(include=["object"]).columns]
-        )
-        self.x_test = encoder.transform(
-            self.x_test[self.x_test.select_dtypes(include=["object"]).columns]
-        )
+        self.x_train = encoder.transform(self.x_train[self.x_train.select_dtypes(include=["object"]).columns])
+        self.x_test = encoder.transform(self.x_test[self.x_test.select_dtypes(include=["object"]).columns])
 
         self.y_train = self.y_train.values
         self.y_test = self.y_test.values
@@ -102,9 +96,7 @@ class OtomotoModelTrainer:
                     mlflow.log_metric(f"{name} MAE", mae)
                     mlflow.log_metric(f"{name} RMSE", rmse)
 
-                params = {
-                    f"{model_name}_{k}": v for k, v in grid_cv.best_params_.items()
-                }
+                params = {f"{model_name}_{k}": v for k, v in grid_cv.best_params_.items()}
                 mlflow.log_params(params)
 
                 model_info = mlflow.sklearn.log_model(grid_cv.best_estimator_, "model")

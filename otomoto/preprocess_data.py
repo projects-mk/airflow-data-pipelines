@@ -23,16 +23,18 @@ class OtomotoPreprocessor:
         for col in ["rok_produkcji", "moc", "liczba_drzwi", "liczba_miejsc"]:
             self.df[col] = self.df[col].apply(convert_to, dtype=int)
 
-        self.df["stan"] = self.df["stan"].apply(
-            lambda x: x.replace("Używane", "Używany").replace("Nowe", "Nowy")
-        )
+        self.df["stan"] = self.df["stan"].apply(lambda x: x.replace("Używane", "Używany").replace("Nowe", "Nowy"))
+
+    def _drop_outliers(self):
+        lower_threshold = self.df["cena"].quantile(0.025)
+        upper_threshold = self.df["cena"].quantile(0.975)
+
+        self.df = self.df[(self.df["cena"] > lower_threshold) & (self.df["cena"] < upper_threshold)]
 
     def _split_to_datasets(self) -> list[pd.DataFrame]:
         y = self.df[["cena"]]
         X = self.df[[col for col in self.df.columns if col != "cena"]]
-        X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=0.15, random_state=42
-        )
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.15, random_state=42)
 
         return X_train, X_test, y_train, y_test
 
@@ -44,26 +46,17 @@ class OtomotoPreprocessor:
         y_test: pd.DataFrame,
     ):
 
-        self.df.to_sql(
-            "preprocessed", con=self.conn_str, schema="otomoto", if_exists="replace"
-        )
+        self.df.to_sql("preprocessed", con=self.conn_str, schema="otomoto", if_exists="replace")
 
-        X_test.to_sql(
-            "x_test", con=self.conn_str, schema="otomoto", if_exists="replace"
-        )
-        y_test.to_sql(
-            "y_test", con=self.conn_str, schema="otomoto", if_exists="replace"
-        )
+        X_test.to_sql("x_test", con=self.conn_str, schema="otomoto", if_exists="replace")
+        y_test.to_sql("y_test", con=self.conn_str, schema="otomoto", if_exists="replace")
 
-        X_train.to_sql(
-            "x_train", con=self.conn_str, schema="otomoto", if_exists="replace"
-        )
-        y_train.to_sql(
-            "y_train", con=self.conn_str, schema="otomoto", if_exists="replace"
-        )
+        X_train.to_sql("x_train", con=self.conn_str, schema="otomoto", if_exists="replace")
+        y_train.to_sql("y_train", con=self.conn_str, schema="otomoto", if_exists="replace")
 
     def __call__(self) -> Any:
         self._remove_nulls()
         self._convert_dtypes()
+        self._drop_outliers()
         X_train, X_test, y_train, y_test = self._split_to_datasets()
         self._save_to_db(X_train, X_test, y_train, y_test)

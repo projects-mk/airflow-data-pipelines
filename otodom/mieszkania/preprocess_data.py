@@ -75,31 +75,28 @@ class OtodomMieszkaniaPreprocessor:
             if_exists="replace",
         )
 
-        X_test.to_sql(
-            "x_test", con=self.conn_str, schema=self.project_name, if_exists="replace"
-        )
-        y_test.to_sql(
-            "y_test", con=self.conn_str, schema=self.project_name, if_exists="replace"
-        )
+        X_test.to_sql("x_test", con=self.conn_str, schema=self.project_name, if_exists="replace")
+        y_test.to_sql("y_test", con=self.conn_str, schema=self.project_name, if_exists="replace")
 
-        X_train.to_sql(
-            "x_train", con=self.conn_str, schema=self.project_name, if_exists="replace"
-        )
-        y_train.to_sql(
-            "y_train", con=self.conn_str, schema=self.project_name, if_exists="replace"
-        )
+        X_train.to_sql("x_train", con=self.conn_str, schema=self.project_name, if_exists="replace")
+        y_train.to_sql("y_train", con=self.conn_str, schema=self.project_name, if_exists="replace")
+
+    def _drop_outliers(self):
+        lower_threshold = self.df["cena"].quantile(0.025)
+        upper_threshold = self.df["cena"].quantile(0.975)
+
+        self.df = self.df[(self.df["cena"] > lower_threshold) & (self.df["cena"] < upper_threshold)]
 
     def _split_to_datasets(self) -> list[pd.DataFrame]:
         y = self.df[["cena"]]
         X = self.df[[col for col in self.df.columns if col != "cena"]]
-        X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=0.15, random_state=42
-        )
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.15, random_state=42)
 
         return X_train, X_test, y_train, y_test
 
     def __call__(self) -> Any:
         self._clean_values()
         self._convert_dtypes()
+        self._drop_outliers()
         X_train, X_test, y_train, y_test = self._split_to_datasets()
         self._save_to_db(X_train, X_test, y_train, y_test)
