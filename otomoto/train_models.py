@@ -8,6 +8,7 @@ from sklearn.preprocessing import OneHotEncoder
 from xgboost import XGBRegressor
 from sklearn.model_selection import GridSearchCV, KFold
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
+from otomoto.utils import generate_conn_string, get_mlflow_uri
 
 
 class OtomotoModelTrainer:
