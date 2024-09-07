@@ -55,23 +55,20 @@ class OtodomModelTrainer:
         ).drop(columns=["index"], errors="ignore")
 
     def one_hot_encoder(self):
+        """Encodes the categorical variables and saves the encoder on MLflow."""
         mlflow.set_tracking_uri(self.mlflow_uri)
         mlflow.set_experiment(self.project_name)
 
-        categorical_cols = self.x_train.select_dtypes(include=["object"]).columns
-        non_categorical_cols = self.x_train.select_dtypes(exclude=["object"]).columns
-
         encoder = OneHotEncoder(handle_unknown="ignore")
-        encoder.fit(self.x_train[categorical_cols])
 
-        x_train_encoded = encoder.transform(self.x_train[categorical_cols])
-        x_test_encoded = encoder.transform(self.x_test[categorical_cols])
+        categorical_columns = self.x_train.select_dtypes(include=["object"]).columns
+        encoder.fit(pd.concat([self.x_train[categorical_columns], self.x_test[categorical_columns]]))
 
-        x_train_encoded_df = pd.DataFrame(x_train_encoded.toarray(), index=self.x_train.index)
-        x_test_encoded_df = pd.DataFrame(x_test_encoded.toarray(), index=self.x_test.index)
+        encoded_x_train = encoder.transform(self.x_train[categorical_columns]).toarray()
+        encoded_x_test = encoder.transform(self.x_test[categorical_columns]).toarray()
 
-        self.x_train = pd.concat([self.x_train[non_categorical_cols], x_train_encoded_df], axis=1)
-        self.x_test = pd.concat([self.x_test[non_categorical_cols], x_test_encoded_df], axis=1)
+        self.x_train = np.hstack((encoded_x_train, self.x_train.select_dtypes(exclude=["object"]).values))
+        self.x_test = np.hstack((encoded_x_test, self.x_test.select_dtypes(exclude=["object"]).values))
 
         self.y_train = self.y_train.values
         self.y_test = self.y_test.values
@@ -87,6 +84,7 @@ class OtodomModelTrainer:
         mlflow.end_run()
 
     def train_models(self):
+        """Train models using GridSearchCV and log performance metrics to MLflow."""
         mlflow.set_tracking_uri(self.mlflow_uri)
         mlflow.set_experiment(self.project_name)
 
@@ -96,6 +94,7 @@ class OtodomModelTrainer:
                 mlflow.set_tag("mlflow.runName", run_name)
 
                 cv = KFold(n_splits=5, random_state=42, shuffle=True)
+
                 grid_cv = GridSearchCV(model, self.parameters, cv=cv)
                 model_name = model_name + f"_{self.project_name}_price_predictor"
 
@@ -109,6 +108,7 @@ class OtodomModelTrainer:
                     r2 = round(r2_score(y_true, pred), 2)
                     mae = round(mean_absolute_error(y_true, pred), 2)
                     rmse = round(np.sqrt(mean_squared_error(y_true, pred)), 2)
+
                     mlflow.log_metric(f"{name} R2", r2)
                     mlflow.log_metric(f"{name} MAE", mae)
                     mlflow.log_metric(f"{name} RMSE", rmse)
@@ -121,6 +121,7 @@ class OtodomModelTrainer:
                 mlflow.register_model(model_uri, f"{model_name}")
 
     def __call__(self):
+        """Main entry point for the class"""
         self.load_data()
         self.one_hot_encoder()
         self.train_models()
