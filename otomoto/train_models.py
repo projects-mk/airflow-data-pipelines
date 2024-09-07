@@ -49,16 +49,25 @@ class OtomotoModelTrainer:
     def one_hot_encoder(self):
         mlflow.set_tracking_uri(self.mlflow_uri)
         mlflow.set_experiment(self.project_name)
-
+    
+        categorical_cols = self.x_train.select_dtypes(include=["object"]).columns
+        non_categorical_cols = self.x_train.select_dtypes(exclude=["object"]).columns
+    
         encoder = OneHotEncoder(handle_unknown="ignore")
-        encoder.fit(self.x_train[self.x_train.select_dtypes(include=["object"]).columns])
-
-        self.x_train = encoder.transform(self.x_train[self.x_train.select_dtypes(include=["object"]).columns])
-        self.x_test = encoder.transform(self.x_test[self.x_test.select_dtypes(include=["object"]).columns])
-
+        encoder.fit(self.x_train[categorical_cols])
+    
+        x_train_encoded = encoder.transform(self.x_train[categorical_cols])
+        x_test_encoded = encoder.transform(self.x_test[categorical_cols])
+    
+        x_train_encoded_df = pd.DataFrame(x_train_encoded.toarray(), index=self.x_train.index)
+        x_test_encoded_df = pd.DataFrame(x_test_encoded.toarray(), index=self.x_test.index)
+    
+        self.x_train = pd.concat([self.x_train[non_categorical_cols], x_train_encoded_df], axis=1)
+        self.x_test = pd.concat([self.x_test[non_categorical_cols], x_test_encoded_df], axis=1)
+    
         self.y_train = self.y_train.values
         self.y_test = self.y_test.values
-
+    
         with mlflow.start_run() as encoder_run:
             run_name = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
             mlflow.set_tag("mlflow.runName", run_name + "_encoder")
