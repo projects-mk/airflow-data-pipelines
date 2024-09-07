@@ -10,7 +10,7 @@ from sklearn.model_selection import GridSearchCV, KFold
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 
 
-class OtodomModelTrainer:
+class OtomotoModelTrainer:
     def __init__(self, project_name: str):
         self.project_name = project_name
         self.x_train = DataFrame()
@@ -82,7 +82,6 @@ class OtodomModelTrainer:
 
                 cv = KFold(n_splits=5, shuffle=True, random_state=42)
                 grid_cv = GridSearchCV(estimator=model, param_grid=self.parameters, cv=cv)
-                model_full_name = model_name + f"_{self.project_name}_price_predictor"
 
                 grid_cv.fit(self.x_train, self.y_train)
 
